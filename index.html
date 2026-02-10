@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Image Search</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="topLeft">
+      <button id="back-btn" class="iconBtn" type="button" title="Back">←</button>
+      <div>
+        <h1>Image Search</h1>
+        <p class="subtitle">Masonry • Filters • Suggestions • History • Favorites ❤️</p>
+      </div>
+    </div>
+
+    <div class="topRight">
+      <button id="favorites-btn" class="pillBtn" type="button">❤️ Favorites</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- SEARCH -->
+    <form id="search-form" class="search">
+      <div class="searchBoxWrap">
+        <input id="search-box" type="text" placeholder="Search: cats, neon city, mountains..." autocomplete="off" />
+        <div id="spell-suggestions" class="suggestions hidden"></div>
+      </div>
+
+      <button id="search-btn" class="solidBtn" type="submit">Search</button>
+      <button id="clear-btn" class="ghostBtn" type="button">Clear</button>
+      <button id="reset-all-btn" class="dangerBtn" type="button">Reset All</button>
+    </form>
+
+    <!-- FILTERS -->
+    <section class="filters">
+      <div class="filterGroup">
+        <label>Sort</label>
+        <select id="sort-select">
+          <option value="relevant" selected>Relevant</option>
+          <option value="latest">Latest</option>
+        </select>
+      </div>
+
+      <div class="filterGroup">
+        <label>Orientation</label>
+        <select id="orientation-select">
+          <option value="">Any</option>
+          <option value="landscape">Landscape</option>
+          <option value="portrait">Portrait</option>
+          <option value="squarish">Squarish</option>
+        </select>
+      </div>
+
+      <div class="filterGroup">
+        <label>Color</label>
+        <select id="color-select">
+          <option value="">Any</option>
+          <option value="black_and_white">B & W</option>
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="yellow">Yellow</option>
+          <option value="orange">Orange</option>
+          <option value="red">Red</option>
+          <option value="purple">Purple</option>
+          <option value="magenta">Magenta</option>
+          <option value="green">Green</option>
+          <option value="teal">Teal</option>
+          <option value="blue">Blue</option>
+        </select>
+      </div>
+
+      <label class="toggle">
+        <input id="infinite-toggle" type="checkbox" />
+        <span>Infinite scroll</span>
+      </label>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="historyWrap">
+      <div class="historyHeader">
+        <h2>Search History</h2>
+        <div class="historyActions">
+          <button id="clear-history-btn" class="ghostBtn" type="button">Clear history</button>
+        </div>
+      </div>
+      <div id="history-list" class="historyList"></div>
+    </section>
+
+    <!-- STATUS/LOADER -->
+    <div id="status" class="status hidden"></div>
+    <div id="loader" class="loader hidden" aria-label="Loading"></div>
+
+    <!-- RESULTS VIEW -->
+    <section id="view-results" class="view">
+      <div id="search-result" class="masonry"></div>
+      <button id="show-more-btn" class="showMore hidden" type="button">Show more</button>
+    </section>
+
+    <!-- FAVORITES VIEW -->
+    <section id="view-favorites" class="view hidden">
+      <div class="viewHeader">
+        <h2>Your Favorites</h2>
+        <button id="clear-favorites-btn" class="ghostBtn" type="button">Clear favorites</button>
+      </div>
+      <div id="favorites-grid" class="masonry"></div>
+      <div id="favorites-empty" class="status hidden">No favorites yet. Tap ❤️ on any image.</div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal hidden">
+    <div class="modalBackdrop" id="modal-close"></div>
+    <div class="modalCard">
+      <button class="modalX" id="modal-x" aria-label="Close">✕</button>
+      <img id="modal-img" alt="" />
+      <div class="modalInfo">
+        <div>
+          <div class="modalTitle" id="modal-title">Photo</div>
+          <div class="modalMeta" id="modal-meta"></div>
+        </div>
+        <div class="modalActions">
+          <a id="modal-open" class="btnOutline" target="_blank" rel="noopener noreferrer">Open</a>
+          <a id="modal-download" class="btnSolid" target="_blank" rel="noopener noreferrer">Download</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
