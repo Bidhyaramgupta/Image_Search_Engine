@@ -1,7 +1,8 @@
 {
-  "name": "image-search-engine",
+  "name": "image-search-engine-backend",
   "version": "1.0.0",
-  "description": "Plain HTML/CSS/JavaScript image search app with an Express proxy for Unsplash.",
+  "private": true,
+  "description": "Express proxy for the Image Search Engine project.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

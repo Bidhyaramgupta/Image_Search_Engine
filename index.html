@@ -9,35 +9,48 @@
 <body>
   <header class="top">
     <div class="topLeft">
-      <button id="back-btn" class="iconBtn" type="button" title="Back">←</button>
+      <button id="back-btn" class="iconBtn" type="button" title="Back" aria-label="Go back">←</button>
       <div>
         <h1>Image Search</h1>
         <p class="subtitle">Masonry • Filters • Suggestions • History • Favorites ❤️</p>
       </div>
+      <button id="theme-toggle" class="pillBtn themeToggle" type="button" aria-label="Switch theme" title="Switch theme">
+        <span id="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span id="theme-toggle-text">Light mode</span>
+      </button>
     </div>
 
     <div class="topRight">
-      <button id="favorites-btn" class="pillBtn" type="button">❤️ Favorites</button>
+      <button id="favorites-btn" class="pillBtn" type="button" aria-controls="view-favorites" aria-label="Open favorites">❤️ Favorites</button>
     </div>
   </header>
 
   <main class="container">
-    <!-- SEARCH -->
-    <form id="search-form" class="search">
+    <form id="search-form" class="search" aria-label="Image search form">
       <div class="searchBoxWrap">
-        <input id="search-box" type="text" placeholder="Search: cats, neon city, mountains..." autocomplete="off" />
-        <div id="spell-suggestions" class="suggestions hidden"></div>
+        <label class="srOnly" for="search-box">Search images</label>
+        <input
+          id="search-box"
+          type="text"
+          placeholder="Search: cats, neon city, mountains..."
+          autocomplete="off"
+          aria-describedby="search-feedback"
+          aria-controls="spell-suggestions"
+          aria-expanded="false"
+          aria-autocomplete="list"
+        />
+        <div id="spell-suggestions" class="suggestions hidden" role="listbox" aria-label="Search suggestions"></div>
+        <div id="search-feedback" class="inlineFeedback hidden" aria-live="polite"></div>
       </div>
 
-      <button id="search-btn" class="solidBtn" type="submit">Search</button>
-      <button id="clear-btn" class="ghostBtn" type="button">Clear</button>
-      <button id="reset-all-btn" class="dangerBtn" type="button">Reset All</button>
+      <button id="search-btn" class="solidBtn" type="submit" aria-label="Search images">Search</button>
+      <button id="clear-btn" class="ghostBtn" type="button" aria-label="Clear current search">Clear</button>
+      <button id="reset-all-btn" class="dangerBtn" type="button" aria-label="Reset app data and search state">Reset All</button>
     </form>
 
-    <!-- FILTERS -->
-    <section class="filters">
+    <section class="filters" aria-label="Search filters">
       <div class="filterGroup">
-        <label>Sort</label>
+        <label for="sort-select">Sort</label>
         <select id="sort-select">
           <option value="relevant" selected>Relevant</option>
           <option value="latest">Latest</option>
@@ -45,7 +58,7 @@
       </div>
 
       <div class="filterGroup">
-        <label>Orientation</label>
+        <label for="orientation-select">Orientation</label>
         <select id="orientation-select">
           <option value="">Any</option>
           <option value="landscape">Landscape</option>
@@ -55,10 +68,10 @@
       </div>
 
       <div class="filterGroup">
-        <label>Color</label>
+        <label for="color-select">Color</label>
         <select id="color-select">
           <option value="">Any</option>
-          <option value="black_and_white">B & W</option>
+          <option value="black_and_white">B &amp; W</option>
           <option value="black">Black</option>
           <option value="white">White</option>
           <option value="yellow">Yellow</option>
@@ -72,58 +85,172 @@
         </select>
       </div>
 
-      <label class="toggle">
+      <label class="toggle" for="infinite-toggle">
         <input id="infinite-toggle" type="checkbox" />
         <span>Infinite scroll</span>
       </label>
     </section>
 
-    <!-- HISTORY -->
-    <section class="historyWrap">
+    <section class="historyWrap" aria-labelledby="history-heading">
       <div class="historyHeader">
-        <h2>Search History</h2>
+        <h2 id="history-heading">Search History</h2>
         <div class="historyActions">
-          <button id="clear-history-btn" class="ghostBtn" type="button">Clear history</button>
+          <button id="clear-history-btn" class="ghostBtn" type="button" aria-label="Clear search history">Clear history</button>
         </div>
       </div>
-      <div id="history-list" class="historyList"></div>
+      <div id="history-list" class="historyList" aria-live="polite"></div>
     </section>
 
-    <!-- STATUS/LOADER -->
-    <div id="status" class="status hidden"></div>
-    <div id="loader" class="loader hidden" aria-label="Loading"></div>
+    <div id="status" class="status hidden" aria-live="polite"></div>
+    <div id="loader" class="loader hidden" aria-label="Loading" aria-hidden="true"></div>
 
-    <!-- RESULTS VIEW -->
-    <section id="view-results" class="view">
-      <div id="search-result" class="masonry"></div>
-      <button id="show-more-btn" class="showMore hidden" type="button">Show more</button>
+    <section id="view-results" class="view" aria-labelledby="results-heading">
+      <h2 id="results-heading" class="srOnly">Search results</h2>
+      <div id="search-result" class="masonry" aria-live="polite"></div>
+      <div id="results-empty" class="emptyState hidden" aria-live="polite"></div>
+      <button id="show-more-btn" class="showMore hidden" type="button" aria-label="Load more results">Show more</button>
+      <div id="results-sentinel" class="resultsSentinel hidden" aria-hidden="true"></div>
     </section>
 
-    <!-- FAVORITES VIEW -->
-    <section id="view-favorites" class="view hidden">
+    <section id="view-favorites" class="view hidden" aria-labelledby="favorites-heading">
       <div class="viewHeader">
-        <h2>Your Favorites</h2>
-        <button id="clear-favorites-btn" class="ghostBtn" type="button">Clear favorites</button>
+        <h2 id="favorites-heading">Your Favorites</h2>
+        <button id="clear-favorites-btn" class="ghostBtn" type="button" aria-label="Clear all favorites">Clear favorites</button>
       </div>
-      <div id="favorites-grid" class="masonry"></div>
-      <div id="favorites-empty" class="status hidden">No favorites yet. Tap ❤️ on any image.</div>
+      <section class="collectionPanel" aria-labelledby="collections-heading">
+        <div class="collectionPanelHeader">
+          <div>
+            <h3 id="collections-heading">Collections</h3>
+            <p class="collectionPanelText">Group favorite images into albums you can revisit anytime.</p>
+          </div>
+          <div class="collectionPanelActions">
+            <button id="create-collection-btn" class="ghostBtn" type="button" aria-label="Create collection">New</button>
+            <button id="rename-collection-btn" class="ghostBtn" type="button" aria-label="Rename selected collection">Rename</button>
+            <button id="delete-collection-btn" class="dangerBtn" type="button" aria-label="Delete selected collection">Delete</button>
+          </div>
+        </div>
+        <div id="collection-list" class="collectionList" aria-live="polite"></div>
+        <form id="collection-form" class="collectionForm hidden" aria-label="Collection form">
+          <label class="srOnly" for="collection-name-input">Collection name</label>
+          <input id="collection-name-input" type="text" maxlength="40" placeholder="Collection name" />
+          <button id="collection-save-btn" class="solidBtn" type="submit">Save</button>
+          <button id="collection-cancel-btn" class="ghostBtn" type="button">Cancel</button>
+        </form>
+      </section>
+      <div id="favorites-grid" class="masonry" aria-live="polite"></div>
+      <div id="favorites-empty" class="emptyState hidden" aria-live="polite"></div>
     </section>
   </main>
 
-  <!-- MODAL -->
-  <div id="modal" class="modal hidden">
-    <div class="modalBackdrop" id="modal-close"></div>
-    <div class="modalCard">
-      <button class="modalX" id="modal-x" aria-label="Close">✕</button>
-      <img id="modal-img" alt="" />
-      <div class="modalInfo">
-        <div>
-          <div class="modalTitle" id="modal-title">Photo</div>
-          <div class="modalMeta" id="modal-meta"></div>
+  <section id="selection-tray" class="selectionTray hidden" aria-labelledby="selection-heading">
+    <div class="selectionTrayHeader">
+      <div>
+        <h2 id="selection-heading">Selected Images</h2>
+        <p id="selection-count" class="selectionTrayCount">0 selected</p>
+      </div>
+      <div class="selectionTrayActions">
+        <button id="collage-open-btn" class="solidBtn" type="button" aria-label="Open Collage Studio">Collage Studio</button>
+        <button id="selection-clear-btn" class="ghostBtn" type="button" aria-label="Clear selected images">Clear all</button>
+      </div>
+    </div>
+    <div id="selection-list" class="selectionList" aria-live="polite"></div>
+  </section>
+
+  <div id="collage-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="collage-title" aria-describedby="collage-description">
+    <div class="modalBackdrop" id="collage-modal-close"></div>
+    <div class="modalCard collageModalCard" tabindex="-1">
+      <button class="modalX" id="collage-modal-x" aria-label="Close Collage Studio">✕</button>
+      <div class="modalLayout collageLayout">
+        <div class="modalMediaWrap collagePreviewWrap">
+          <canvas id="collage-canvas" class="collageCanvas" width="1600" height="1200" aria-hidden="true"></canvas>
+          <img id="collage-preview-image" class="collagePreviewImage hidden" alt="Generated collage preview" />
+          <div id="collage-preview-empty" class="collagePreviewEmpty">
+            <div class="emptyStateTitle">Preview your collage</div>
+            <div class="emptyStateText">Select at least two images, pick a layout, and generate a final image you can download.</div>
+          </div>
         </div>
-        <div class="modalActions">
-          <a id="modal-open" class="btnOutline" target="_blank" rel="noopener noreferrer">Open</a>
-          <a id="modal-download" class="btnSolid" target="_blank" rel="noopener noreferrer">Download</a>
+        <div class="modalInfo collageInfo">
+          <div>
+            <div class="modalTitle" id="collage-title">Collage Studio</div>
+            <p id="collage-description" class="modalDescription">Turn your selected images into one clean shareable composition.</p>
+          </div>
+          <div class="collageSummary">
+            <div id="collage-selection-meta" class="modalDetail">0 selected</div>
+            <div id="collage-layout-meta" class="modalDetail">Choose a layout</div>
+            <div id="collage-theme-meta" class="modalDetail">Theme: Any</div>
+          </div>
+          <div class="modalCollectionSection">
+            <div class="modalSectionTitle">Photo Theme</div>
+            <div class="collageThemeControls">
+              <label class="srOnly" for="collage-theme-select">Choose a collage theme</label>
+              <select id="collage-theme-select">
+                <option value="">Any / manual only</option>
+                <option value="nature">Nature</option>
+                <option value="city">City</option>
+                <option value="travel">Travel</option>
+                <option value="animals">Animals</option>
+                <option value="food">Food</option>
+                <option value="art">Art</option>
+                <option value="minimalist">Minimalist</option>
+                <option value="black-and-white">Black and white</option>
+              </select>
+              <button id="collage-theme-add-btn" class="btnOutline" type="button">Add matches from results</button>
+            </div>
+            <div id="collage-theme-help" class="inlineFeedback">Manual selection stays active. Choose a theme to quickly add matching images from the current results.</div>
+          </div>
+          <div class="modalCollectionSection">
+            <div class="modalSectionTitle">Layout Templates</div>
+            <div id="collage-layout-options" class="collageLayoutOptions">
+              <button class="btnOutline collageLayoutBtn" type="button" data-collage-layout="duo">2-up split</button>
+              <button class="btnOutline collageLayoutBtn" type="button" data-collage-layout="grid">4-image grid</button>
+              <button class="btnOutline collageLayoutBtn" type="button" data-collage-layout="columns">3-column collage</button>
+              <button class="btnOutline collageLayoutBtn" type="button" data-collage-layout="hero">Hero + strip</button>
+            </div>
+          </div>
+          <div id="collage-status" class="inlineFeedback">Select a few images to begin.</div>
+          <div class="modalActions">
+            <button id="collage-generate-btn" class="solidBtn" type="button">Generate collage</button>
+            <a id="collage-download-btn" class="btnOutline disabledLink" href="#" download="collage-studio.jpg" aria-disabled="true">Download image</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+    <div class="modalBackdrop" id="modal-close"></div>
+    <div class="modalCard" tabindex="-1">
+      <button class="modalX" id="modal-x" aria-label="Close image details">✕</button>
+      <div class="modalLayout">
+        <div class="modalMediaWrap">
+          <img id="modal-img" alt="" />
+        </div>
+        <div class="modalInfo">
+          <div class="modalHeader">
+            <div>
+              <div class="modalTitle" id="modal-title">Photo</div>
+              <div class="modalMeta" id="modal-meta"></div>
+            </div>
+            <button id="modal-favorite" class="btnOutline" type="button" aria-label="Add or remove favorite">Favorite</button>
+          </div>
+          <p id="modal-description" class="modalDescription hidden"></p>
+          <div id="modal-details" class="modalDetails"></div>
+          <div id="modal-tags" class="modalTags hidden"></div>
+          <div class="modalCollectionSection">
+            <div class="modalSectionTitle">Collections</div>
+            <div class="modalCollectionControls">
+              <label class="srOnly" for="modal-collection-select">Choose collection</label>
+              <select id="modal-collection-select"></select>
+              <button id="modal-collection-action" class="btnOutline" type="button">Add to collection</button>
+            </div>
+            <div id="modal-collection-memberships" class="modalCollectionMemberships"></div>
+          </div>
+          <div class="modalActions">
+            <button id="modal-copy-link" class="btnOutline" type="button" aria-label="Copy image link">Copy image link</button>
+            <a id="modal-open" class="btnOutline" target="_blank" rel="noopener noreferrer" aria-label="Open source page">Open source</a>
+            <a id="modal-original" class="btnOutline" target="_blank" rel="noopener noreferrer" aria-label="Open original image">Open original</a>
+            <a id="modal-download" class="btnSolid" target="_blank" rel="noopener noreferrer" aria-label="Download image">Download</a>
+          </div>
         </div>
       </div>
     </div>
