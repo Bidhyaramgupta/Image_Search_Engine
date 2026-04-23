@@ -48,8 +48,13 @@ let keyword = "";
 let page = 1;
 let isLoading = false;
 
-const stack = ["home"]; // home -> results -> favorites
-function currentView() { return stack[stack.length - 1]; }
+const HOME_VIEW = "home";
+const VALID_VIEWS = new Set([HOME_VIEW, "results", "favorites"]);
+const stack = [HOME_VIEW]; // home -> results -> favorites
+
+function currentView() {
+  return stack[stack.length - 1] || HOME_VIEW;
+}
 
 /* ---------- Storage Keys ---------- */
 const FAV_KEY = "img_favorites_v1";
@@ -80,7 +85,8 @@ function setLoading(state) {
 }
 
 function showView(name) {
-  const isFav = name === "favorites";
+  const viewName = VALID_VIEWS.has(name) ? name : HOME_VIEW;
+  const isFav = viewName === "favorites";
   viewFavorites.classList.toggle("hidden", !isFav);
   viewResults.classList.toggle("hidden", isFav);
   if (isFav) renderFavorites();
@@ -88,14 +94,34 @@ function showView(name) {
 }
 
 function pushView(name) {
-  if (currentView() === name) return;
+  if (!VALID_VIEWS.has(name) || currentView() === name) return;
   stack.push(name);
   showView(name);
 }
 
-function popView() {
-  if (stack.length <= 1) return;
+function resetToHomeView() {
+  stack.length = 0;
+  stack.push(HOME_VIEW);
+  showView(HOME_VIEW);
+}
+
+function goBack() {
+  if (stack.length <= 1) {
+    resetToHomeView();
+    return;
+  }
+
   stack.pop();
+
+  while (stack.length > 1 && !VALID_VIEWS.has(currentView())) {
+    stack.pop();
+  }
+
+  if (!VALID_VIEWS.has(currentView())) {
+    resetToHomeView();
+    return;
+  }
+
   showView(currentView());
 }
 
@@ -376,7 +402,7 @@ async function searchImages() {
     searchResult.innerHTML = "";
     showMoreBtn.classList.add("hidden");
     setStatus("Type something to search (ex: sunsets, cats, coffee).");
-    pushView("home");
+    resetToHomeView();
     return;
   }
 
@@ -489,7 +515,7 @@ showMoreBtn.addEventListener("click", () => {
 
 favoritesBtn.addEventListener("click", () => pushView("favorites"));
 clearFavoritesBtn.addEventListener("click", () => { localStorage.removeItem(FAV_KEY); renderFavorites(); });
-backBtn.addEventListener("click", () => popView());
+backBtn.addEventListener("click", () => goBack());
 clearHistoryBtn.addEventListener("click", () => clearHistory());
 
 [sortSelect, orientationSelect, colorSelect].forEach((el) => {
@@ -529,7 +555,7 @@ clearBtn.addEventListener("click", () => {
   closeModal();
 
   setStatus("Cleared. Search something to begin.");
-  pushView("home");
+  resetToHomeView();
 });
 
 /* ---------- ✅ Reset All (clears screen + history + favorites) ---------- */
@@ -553,12 +579,12 @@ resetAllBtn.addEventListener("click", () => {
   renderFavorites();
 
   setStatus("Everything reset ✅");
-  pushView("home");
+  resetToHomeView();
 });
 
 /* ---------- Init ---------- */
 renderHistory();
 renderFavorites();
 setStatus("Search something to begin (ex: nature, city, food).");
-showView("home");
+resetToHomeView();
 updateBackButton();
