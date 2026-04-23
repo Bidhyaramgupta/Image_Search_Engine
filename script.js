@@ -1,5 +1,4 @@
 // ✅ Put your Unsplash access key here
-const accessKey = "P39kvatWi4-U9xadjgrgHgMA9cuEnaZIoblrBtBPyR8";
 
 /* ---------- DOM ---------- */
 const searchForm = document.getElementById("search-form");
@@ -47,6 +46,7 @@ const modalDownload = document.getElementById("modal-download");
 let keyword = "";
 let page = 1;
 let isLoading = false;
+const API_BASE = "/api";
 
 const HOME_VIEW = "home";
 const VALID_VIEWS = new Set([HOME_VIEW, "results", "favorites"]);
@@ -375,7 +375,6 @@ function buildSearchUrl() {
   const params = new URLSearchParams({
     page: String(page),
     query: keyword,
-    client_id: accessKey,
     per_page: "12",
     order_by: sort
   });
@@ -383,12 +382,12 @@ function buildSearchUrl() {
   if (orientation) params.set("orientation", orientation);
   if (color) params.set("color", color);
 
-  return `https://api.unsplash.com/search/photos?${params.toString()}`;
+  return `${API_BASE}/search/photos?${params.toString()}`;
 }
 
 // ✅ Fallback images if no results:
 async function loadFallbackImages() {
-  const url = `https://api.unsplash.com/photos/random?count=12&client_id=${accessKey}`;
+  const url = `${API_BASE}/photos/random?count=12`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Fallback failed (${res.status})`);
   return await res.json(); // array

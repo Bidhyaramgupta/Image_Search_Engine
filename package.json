@@ -1,0 +1,14 @@
+{
+  "name": "image-search-engine",
+  "version": "1.0.0",
+  "description": "Plain HTML/CSS/JavaScript image search app with an Express proxy for Unsplash.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2"
+  }
+}
