@@ -1,11 +1,22 @@
 const express = require("express");
 const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+const fs = require("fs");
+
+const rootDir = path.resolve(__dirname, "..");
+const envPath = path.join(rootDir, ".env");
+const envExamplePath = path.join(rootDir, ".env.example");
+
+if (fs.existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+} else if (fs.existsSync(envExamplePath)) {
+  require("dotenv").config({ path: envExamplePath });
+  console.warn("Loaded environment variables from .env.example because .env was not found.");
+}
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
-const FRONTEND_ROOT = path.resolve(__dirname, "..");
+const FRONTEND_ROOT = rootDir;
 const UNSPLASH_API_BASE = "https://api.unsplash.com";
 const SEARCH_ALLOWED_PARAMS = new Set([
   "page",
